@@ -1,0 +1,8 @@
+.load-stat{
+	position: fixed;
+	top: 0;
+	right: 0;
+	background: #fff;
+	border: 2px double gray;
+	padding: 1em;
+}

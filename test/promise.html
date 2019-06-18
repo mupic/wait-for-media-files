@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Promise</title>
+	<script src="./dist/window.prsWait-for-media-files.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body>
+	<div id="files">
+		<div>
+			<img src="./files/1.jpg" width="400">
+		</div>
+		<div style="background: url(./files/2.jpg); background-size: cover; width: 400px; height: 200px;">
+			
+		</div>
+		<div>
+			<audio controls="">
+				<source src="./files/4.mp3">
+			</audio>
+		</div>
+		<div>
+			<video controls="" width="400">
+				<source src="./files/3.mp4">
+			</video>
+		</div>
+		<div>
+			<iframe width="560" height="315" src="https://www.youtube.com/embed/rkAfWfZkfyo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		</div>
+	</div>
+
+	<div class="load-stat">
+		<div>
+			<p><b>Before files loaded</b></p>
+			<ul id="before_load"></ul>
+		</div>
+		<div>
+			<p><b>After files loaded</b></p>
+			<ul id="after_load"></ul>
+		</div>
+	</div>
+
+	<script async defer src="./promise.js"></script>
+</body>
+</html>
