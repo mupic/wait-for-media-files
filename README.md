@@ -7,12 +7,19 @@ npm i wait-media-files
 ## Require
 ````javascript
 import waitMediaFiles from 'wait-media-files';
+
+waitMediaFiles(document.getElementsByTagName('body'), {})
+.image(function(wasFound){})
+.audio(function(wasFound){})
+.video(function(wasFound){})
+.iframe(function(wasFound){})
+.all(function(){})
 ````
 
 ## Example
 ### Vanilla js
-````
-require('wait-media-files/src/window.wait-for-media-files');
+````javascript
+require('wait-media-files/src/es5/window.wait-for-media-files');
 window.waitMediaFiles(document.getElementsByTagName('body'), {})
 .image(function(wasFound){})
 .audio(function(wasFound){})
@@ -22,9 +29,9 @@ window.waitMediaFiles(document.getElementsByTagName('body'), {})
 ````
 
 ### jQuery
-````
+````javascript
 require('jquery');
-require('wait-for-media-files/src/jquery.wait-for-media-files');
+require('wait-media-files/src/es5/jquery.wait-for-media-files');
 $('body').waitMediaFiles({})
 .image(function(wasFound){})
 .audio(function(wasFound){})
@@ -35,8 +42,8 @@ $('body').waitMediaFiles({})
 
 ## Promise example
 ### Vanilla js
-````
-import prsWaitMediaFiles from 'wait-for-media-files/src/promise.wait-media-files';
+````javascript
+import prsWaitMediaFiles from 'wait-media-files/src/es5/promise.wait-media-files';
 var callbacks = prsWaitMediaFiles(document.getElementsByTagName('body'), {});
 callbacks.image().then(function(wasFound){});
 callbacks.audio().then(function(wasFound){});
@@ -46,9 +53,9 @@ callbacks.all().then(function(){});
 ````
 
 ### jQuery
-````
+````javascript
 require('jquery');
-require('wait-for-media-files/src/jqueryPromise.wait-for-media-files');
+require('wait-media-files/src/es5/jqueryPromise.wait-for-media-files');
 var callbacks = $('body').prsWaitMediaFiles({});
 callbacks.image().then(function(wasFound){});
 callbacks.audio().then(function(wasFound){});
@@ -59,7 +66,7 @@ callbacks.all().then(function(){});
 
 ## waitMediaFiles(domElements[, config])
 ##### config
-````
+````javascript
 {
 	audioEvent: 'canplay', //example: canplay, canplaythrough, loadeddata, loadedmetadata.
 	videoEvent: 'canplay', //example: canplay, canplaythrough, loadeddata, loadedmetadata.

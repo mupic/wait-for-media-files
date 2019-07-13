@@ -11,33 +11,7 @@ const outPath = path.join(appPath, '/dist/');
 const rules = [{
 		test: /\.js$/,
 		exclude: /(node_modules|bower_components)/,
-		use: {
-			loader: 'babel-loader',
-			options: {
-				presets: [
-					[
-						"@babel/preset-env",
-						{
-							"useBuiltIns": "usage",
-							"corejs": "2.6.9",
-							// "targets": "last 20 versions"
-							"targets": "defaults"
-						}
-					],
-				],
-				plugins: [
-					[
-						"@babel/plugin-transform-runtime",
-						{
-							"corejs": false,
-							"helpers": true,
-							"regenerator": true,
-							"useESModules": false
-						}
-					]
-				]
-			}
-		}
+		use: 'babel-loader',
 	},
 ];
 
