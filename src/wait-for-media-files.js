@@ -44,7 +44,7 @@ var waitMediaFiles = function(domElement, options = {}){
 			audios.push(el);
 		}else if(el.tagName == 'IFRAME'){
 			iframes.push(el);
-		}else if(el.tagName == 'IMG' || el.tagName == 'IMAGE'){
+		}else{
 			images.push(el);
 		}
 	}
@@ -90,8 +90,15 @@ var waitMediaFiles = function(domElement, options = {}){
 					imagesCountLoaded++;
 					continue;
 				}
-				wasImage = true;
+
 				let imagelink = /url\(['"]?([^'"]*)["']?\)/mig.exec(imageBG);
+
+				if (!imagelink){
+					imagesCountLoaded++;
+					continue;
+				}
+				wasImage = true;
+
 				let img = new Image();
 				img.onload = imgLoaded;
 				img.onerror = imgLoaded;
