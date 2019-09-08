@@ -56,7 +56,9 @@ var waitMediaFiles = function(domElement, options = {}){
 		var allLoadedPoints = []; //should be 4 elements
 		var ifSomethingLoaded = () => {
 			if(allLoadedPoints.length >= 4)
-				allLoaded();
+				for (var i = 0; i < allLoaded.length; i++) {
+					allLoaded[i]();
+				}
 		};
 		var pushOnePoints = () => {
 			allLoadedPoints.push('');
@@ -70,7 +72,9 @@ var waitMediaFiles = function(domElement, options = {}){
 			if(count)
 				imagesCountLoaded++;
 			if(images.length == imagesCountLoaded){
-				imagesLoaded(count);
+				for (var i = 0; i < imagesLoaded.length; i++) {
+					imagesLoaded[i](count);
+				}
 				pushOnePoints();
 				ifSomethingLoaded();
 			}
@@ -115,7 +119,9 @@ var waitMediaFiles = function(domElement, options = {}){
 			if(count)
 				audiosCountLoaded++;
 			if(audios.length == audiosCountLoaded){
-				audiosLoaded(count);
+				for (var i = 0; i < audiosLoaded.length; i++) {
+					audiosLoaded[i](count);
+				}
 				pushOnePoints();
 				ifSomethingLoaded();
 			}
@@ -141,7 +147,9 @@ var waitMediaFiles = function(domElement, options = {}){
 			if(count)
 				videosCountLoaded++;
 			if(videos.length == videosCountLoaded){
-				videosLoaded(count);
+				for (var i = 0; i < videosLoaded.length; i++) {
+					videosLoaded[i](count);
+				}
 				pushOnePoints();
 				ifSomethingLoaded();
 			}
@@ -167,7 +175,9 @@ var waitMediaFiles = function(domElement, options = {}){
 			if(count)
 				iframesCountLoaded++;
 			if(iframes.length == iframesCountLoaded){
-				iframesLoaded(count);
+				for (var i = 0; i < iframesLoaded.length; i++) {
+					iframesLoaded[i](count);
+				}
 				pushOnePoints();
 				ifSomethingLoaded();
 			}
@@ -199,31 +209,31 @@ var waitMediaFiles = function(domElement, options = {}){
 
 	}, 5); //timeout
 
-	var allLoaded = () => {};
-	var audiosLoaded = () => {};
-	var iframesLoaded = () => {};
-	var imagesLoaded = () => {};
-	var videosLoaded = () => {};
+	var allLoaded = [];
+	var audiosLoaded = [];
+	var iframesLoaded = [];
+	var imagesLoaded = [];
+	var videosLoaded = [];
 
 	var obj = {
 		all: (callBack) => {
-			allLoaded = callBack;
+			allLoaded.push(callBack);
 			return obj;
 		},
 		audio: (callBack) => {
-			audiosLoaded = callBack;
+			audiosLoaded.push(callBack);
 			return obj;
 		},
 		iframe: (callBack) => {
-			iframesLoaded = callBack;
+			iframesLoaded.push(callBack);
 			return obj;
 		},
 		image: (callBack) => {
-			imagesLoaded = callBack;
+			imagesLoaded.push(callBack);
 			return obj;
 		},
 		video: (callBack) => {
-			videosLoaded = callBack;
+			videosLoaded.push(callBack);
 			return obj;
 		},
 	};
