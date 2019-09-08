@@ -4,4 +4,4 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 
 var _waitForMediaFiles = _interopRequireDefault(require("./wait-for-media-files"));
 
-window.waitMediaFiles = _waitForMediaFiles["default"];
+window.waitMediaFiles = _waitForMediaFiles.default;

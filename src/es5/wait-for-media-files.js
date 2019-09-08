@@ -2,16 +2,30 @@
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-require("core-js/modules/es6.object.define-property");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = void 0;
+exports.default = void 0;
+
+require("core-js/modules/es7.object.get-own-property-descriptors");
+
+require("core-js/modules/es6.symbol");
+
+require("core-js/modules/web.dom.iterable");
+
+require("core-js/modules/es6.array.iterator");
+
+require("core-js/modules/es6.object.to-string");
+
+require("core-js/modules/es6.object.keys");
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
-var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { keys.push.apply(keys, Object.getOwnPropertySymbols(object)); } if (enumerableOnly) keys = keys.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 /* 
  * Waiting for all sources to load in a DOM element
@@ -20,7 +34,7 @@ var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/obje
  */
 var waitMediaFiles = function waitMediaFiles(domElement) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  options = (0, _objectSpread2["default"])({
+  options = _objectSpread({
     audioEvent: 'canplay',
     //example: canplay, canplaythrough, loadeddata, loadedmetadata. https://developer.mozilla.org/ru/docs/Web/Guide/Events/Media_events
     videoEvent: 'canplay'
@@ -75,7 +89,9 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
     var allLoadedPoints = []; //should be 4 elements
 
     var ifSomethingLoaded = function ifSomethingLoaded() {
-      if (allLoadedPoints.length >= 4) allLoaded();
+      if (allLoadedPoints.length >= 4) for (var i = 0; i < allLoaded.length; i++) {
+        allLoaded[i]();
+      }
     };
 
     var pushOnePoints = function pushOnePoints() {
@@ -89,11 +105,14 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
 
     var imgLoaded = function imgLoaded() {
       var count = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-      count = (0, _typeof2["default"])(count) == 'object' ? true : count;
+      count = (0, _typeof2.default)(count) == 'object' ? true : count;
       if (count) imagesCountLoaded++;
 
       if (images.length == imagesCountLoaded) {
-        imagesLoaded(count);
+        for (var i = 0; i < imagesLoaded.length; i++) {
+          imagesLoaded[i](count);
+        }
+
         pushOnePoints();
         ifSomethingLoaded();
       }
@@ -140,11 +159,14 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
 
     var audLoaded = function audLoaded() {
       var count = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-      count = (0, _typeof2["default"])(count) == 'object' ? true : count;
+      count = (0, _typeof2.default)(count) == 'object' ? true : count;
       if (count) audiosCountLoaded++;
 
       if (audios.length == audiosCountLoaded) {
-        audiosLoaded(count);
+        for (var i = 0; i < audiosLoaded.length; i++) {
+          audiosLoaded[i](count);
+        }
+
         pushOnePoints();
         ifSomethingLoaded();
       }
@@ -166,11 +188,14 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
 
     var vidLoaded = function vidLoaded() {
       var count = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-      count = (0, _typeof2["default"])(count) == 'object' ? true : count;
+      count = (0, _typeof2.default)(count) == 'object' ? true : count;
       if (count) videosCountLoaded++;
 
       if (videos.length == videosCountLoaded) {
-        videosLoaded(count);
+        for (var i = 0; i < videosLoaded.length; i++) {
+          videosLoaded[i](count);
+        }
+
         pushOnePoints();
         ifSomethingLoaded();
       }
@@ -192,11 +217,14 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
 
     var ifrLoaded = function ifrLoaded() {
       var count = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-      count = (0, _typeof2["default"])(count) == 'object' ? true : count;
+      count = (0, _typeof2.default)(count) == 'object' ? true : count;
       if (count) iframesCountLoaded++;
 
       if (iframes.length == iframesCountLoaded) {
-        iframesLoaded(count);
+        for (var i = 0; i < iframesLoaded.length; i++) {
+          iframesLoaded[i](count);
+        }
+
         pushOnePoints();
         ifSomethingLoaded();
       }
@@ -229,35 +257,30 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
     if (!iframes.length) ifrLoaded(false);
   }, 5); //timeout
 
-  var allLoaded = function allLoaded() {};
-
-  var audiosLoaded = function audiosLoaded() {};
-
-  var iframesLoaded = function iframesLoaded() {};
-
-  var imagesLoaded = function imagesLoaded() {};
-
-  var videosLoaded = function videosLoaded() {};
-
+  var allLoaded = [];
+  var audiosLoaded = [];
+  var iframesLoaded = [];
+  var imagesLoaded = [];
+  var videosLoaded = [];
   var obj = {
     all: function all(callBack) {
-      allLoaded = callBack;
+      allLoaded.push(callBack);
       return obj;
     },
     audio: function audio(callBack) {
-      audiosLoaded = callBack;
+      audiosLoaded.push(callBack);
       return obj;
     },
     iframe: function iframe(callBack) {
-      iframesLoaded = callBack;
+      iframesLoaded.push(callBack);
       return obj;
     },
     image: function image(callBack) {
-      imagesLoaded = callBack;
+      imagesLoaded.push(callBack);
       return obj;
     },
     video: function video(callBack) {
-      videosLoaded = callBack;
+      videosLoaded.push(callBack);
       return obj;
     }
   };
@@ -265,4 +288,4 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
 };
 
 var _default = waitMediaFiles;
-exports["default"] = _default;
+exports.default = _default;

@@ -2,12 +2,10 @@
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-require("core-js/modules/es6.object.define-property");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = void 0;
+exports.default = void 0;
 
 require("core-js/modules/es6.promise");
 
@@ -16,7 +14,7 @@ require("core-js/modules/es6.object.to-string");
 var _waitForMediaFiles = _interopRequireDefault(require("./wait-for-media-files"));
 
 var promiseWaitMediaFiles = function promiseWaitMediaFiles(domElement, options) {
-  var callbacks = (0, _waitForMediaFiles["default"])(domElement, options);
+  var callbacks = (0, _waitForMediaFiles.default)(domElement, options);
   return {
     all: function all() {
       return new Promise(function (resolve) {
@@ -47,4 +45,4 @@ var promiseWaitMediaFiles = function promiseWaitMediaFiles(domElement, options) 
 };
 
 var _default = promiseWaitMediaFiles;
-exports["default"] = _default;
+exports.default = _default;

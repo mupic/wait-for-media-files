@@ -6,6 +6,6 @@ var _waitForMediaFiles = _interopRequireDefault(require("./wait-for-media-files"
 
 jQuery(function ($) {
   $.fn.waitMediaFiles = function (options) {
-    return (0, _waitForMediaFiles["default"])(this, options);
+    return (0, _waitForMediaFiles.default)(this, options);
   };
 });

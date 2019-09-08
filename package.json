@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "webpack --mode development",
 		"build": "webpack --mode production",
-		"es5": "npx babel ./src/*.js --out-dir ./es5"
+		"es5": "npx babel ./src/*.js --out-dir ./src/es5"
 	},
 	"keywords": [
 		"async",
