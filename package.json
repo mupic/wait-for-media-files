@@ -1,6 +1,6 @@
 {
 	"name": "wait-media-files",
-	"version": "2.0.5",
+	"version": "2.0.6",
 	"description": "Waiting for all sources to load in a DOM element",
 	"main": "./src/es5/wait-for-media-files.js",
 	"scripts": {
