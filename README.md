@@ -9,58 +9,58 @@ npm i wait-media-files
 import waitMediaFiles from 'wait-media-files';
 
 waitMediaFiles(document.getElementsByTagName('body'), {})
-.image(function(wasFound){})
-.audio(function(wasFound){})
-.video(function(wasFound){})
-.iframe(function(wasFound){})
+.image(function(imageExists){}, function(el, isError){}) //The first callback will be called when all the images are loaded. The second callback will be called every time a image is loaded.
+.audio(function(audioExists){}, function(el, isError){})
+.video(function(videoExists){}, function(el, isError){})
+.iframe(function(iframeExists){}, function(el, isError){})
 .all(function(){})
 ````
 
 ## Example
 ### Vanilla js
 ````javascript
-require('wait-media-files/src/es5/window.wait-for-media-files');
+require('wait-media-files/global');
 window.waitMediaFiles(document.getElementsByTagName('body'), {})
-.image(function(wasFound){})
-.audio(function(wasFound){})
-.video(function(wasFound){})
-.iframe(function(wasFound){})
+.image(function(imageExists){}, function(el, isError){})
+.audio(function(audioExists){}, function(el, isError){})
+.video(function(videoExists){}, function(el, isError){})
+.iframe(function(iframeExists){}, function(el, isError){})
 .all(function(){})
 ````
 
 ### jQuery
 ````javascript
 require('jquery');
-require('wait-media-files/src/es5/jquery.wait-for-media-files');
+require('wait-media-files/jquery');
 $('body').waitMediaFiles({})
-.image(function(wasFound){})
-.audio(function(wasFound){})
-.video(function(wasFound){})
-.iframe(function(wasFound){})
+.image(function(imageExists){}, function(el, isError){})
+.audio(function(audioExists){}, function(el, isError){})
+.video(function(videoExists){}, function(el, isError){})
+.iframe(function(iframeExists){}, function(el, isError){})
 .all(function(){})
 ````
 
 ## Promise example
 ### Vanilla js
 ````javascript
-import prsWaitMediaFiles from 'wait-media-files/src/es5/promise.wait-media-files';
+import prsWaitMediaFiles from 'wait-media-files/promise';
 var callbacks = prsWaitMediaFiles(document.getElementsByTagName('body'), {});
-callbacks.image().then(function(wasFound){});
-callbacks.audio().then(function(wasFound){});
-callbacks.video().then(function(wasFound){});
-callbacks.iframe().then(function(wasFound){});
+callbacks.image(function(el, isError){}).then(function(imageExists){});
+callbacks.audio(function(el, isError){}).then(function(audioExists){});
+callbacks.video(function(el, isError){}).then(function(videoExists){});
+callbacks.iframe(function(el, isError){}).then(function(iframeExists){});
 callbacks.all().then(function(){});
 ````
 
 ### jQuery
 ````javascript
 require('jquery');
-require('wait-media-files/src/es5/jqueryPromise.wait-for-media-files');
+require('wait-media-files/jqueryPromise');
 var callbacks = $('body').prsWaitMediaFiles({});
-callbacks.image().then(function(wasFound){});
-callbacks.audio().then(function(wasFound){});
-callbacks.video().then(function(wasFound){});
-callbacks.iframe().then(function(wasFound){});
+callbacks.image(function(el, isError){}).then(function(imageExists){});
+callbacks.audio(function(el, isError){}).then(function(audioExists){});
+callbacks.video(function(el, isError){}).then(function(videoExists){});
+callbacks.iframe(function(el, isError){}).then(function(iframeExists){});
 callbacks.all().then(function(){});
 ````
 

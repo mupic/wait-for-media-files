@@ -22,16 +22,16 @@ module.exports = {
 	context: appPath,
 	entry: {
 		"wait-for-media-files": [
-			jsPath + 'window.wait-for-media-files.js',
+			jsPath + 'global.js',
 		],
-		"jquery.wait-for-media-files": [
-			jsPath + 'jquery.wait-for-media-files.js',
+		"jquery": [
+			jsPath + 'jquery.js',
 		],
-		"../test/dist/window.prsWait-for-media-files": [
-			jsPath + '/../test/src/window.prsWait-for-media-files.js',
+		"../test/dist/globalPromise": [
+			jsPath + '/../test/src/globalPromise.js',
 		],
-		"../test/dist/jqueryPromise.wait-for-media-files": [
-			jsPath + 'jqueryPromise.wait-for-media-files.js',
+		"../test/dist/jqueryPromise": [
+			jsPath + 'jqueryPromise.js',
 		],
 	},
 	resolve: {

@@ -16,29 +16,29 @@ var _waitForMediaFiles = _interopRequireDefault(require("./wait-for-media-files"
 var promiseWaitMediaFiles = function promiseWaitMediaFiles(domElement, options) {
   var callbacks = (0, _waitForMediaFiles.default)(domElement, options);
   return {
-    all: function all() {
+    all: function all(watch) {
       return new Promise(function (resolve) {
-        callbacks.all(resolve);
+        callbacks.all(resolve, watch);
       });
     },
-    audio: function audio() {
+    audio: function audio(watch) {
       return new Promise(function (resolve) {
-        callbacks.audio(resolve);
+        callbacks.audio(resolve, watch);
       });
     },
-    iframe: function iframe() {
+    iframe: function iframe(watch) {
       return new Promise(function (resolve) {
-        callbacks.iframe(resolve);
+        callbacks.iframe(resolve, watch);
       });
     },
-    image: function image() {
+    image: function image(watch) {
       return new Promise(function (resolve) {
-        callbacks.image(resolve);
+        callbacks.image(resolve, watch);
       });
     },
-    video: function video() {
+    video: function video(watch) {
       return new Promise(function (resolve) {
-        callbacks.video(resolve);
+        callbacks.video(resolve, watch);
       });
     }
   };

@@ -43,8 +43,9 @@ var waitMediaFiles = function(domElement, options = {}){
 		}else if(el.tagName == 'AUDIO'){
 			audios.push(el);
 		}else if(el.tagName == 'IFRAME'){
-			iframes.push(el);
-		}else{
+			if(!el.attributes['wfmf-miss'])
+				iframes.push(el);
+		}else if(el.tagName != 'SOURCE'){
 			images.push(el);
 		}
 	}
@@ -57,7 +58,8 @@ var waitMediaFiles = function(domElement, options = {}){
 		var ifSomethingLoaded = () => {
 			if(allLoadedPoints.length >= 4)
 				for (var i = 0; i < allLoaded.length; i++) {
-					allLoaded[i]();
+					if(typeof allLoaded[i] == 'function')
+						allLoaded[i]();
 				}
 		};
 		var pushOnePoints = () => {
@@ -67,74 +69,123 @@ var waitMediaFiles = function(domElement, options = {}){
 		/* images */
 		var wasImage = false;
 		var imagesCountLoaded = 0;
-		var imgLoaded = (count = true) => {
-			count = typeof count == 'object'? true : count;
-			if(count)
-				imagesCountLoaded++;
+		var imageCheckLoad = (imageExists) => {
 			if(images.length == imagesCountLoaded){
-				for (var i = 0; i < imagesLoaded.length; i++) {
-					imagesLoaded[i](count);
+				for (let j = 0; j < imagesLoaded.length; j++) {
+					if(typeof imagesLoaded[j] == 'function')
+						imagesLoaded[j](imageExists);
 				}
 				pushOnePoints();
 				ifSomethingLoaded();
 			}
 		};
-		for (let i = 0; i < images.length; i++) {
-			var el = images[i];
-
-			if(el.tagName == 'IMG' || el.tagName == 'IMAGE'){
-				wasImage = true;
-				let img = new Image();
-				img.onload = imgLoaded;
-				img.onerror = imgLoaded;
-				img.src = el.src;
-			}else{
-				let imageBG = window.getComputedStyle(el, null).getPropertyValue("background-image");
-				if (imageBG == 'none'){
-					imagesCountLoaded++;
-					continue;
+		var imgLoaded = (countIt, el, error = false) => {
+			if(countIt){
+				imagesCountLoaded++;
+				for (var i = 0; i < imagesWatch.length; i++) {
+					if(typeof imagesWatch[i] == 'function')
+						imagesWatch[i](el, error);
 				}
 
-				let imagelink = /url\(['"]?([^'"]*)["']?\)/mig.exec(imageBG);
-
-				if (!imagelink){
-					imagesCountLoaded++;
-					continue;
-				}
-				wasImage = true;
-
-				let img = new Image();
-				img.onload = imgLoaded;
-				img.onerror = imgLoaded;
-				img.src = imagelink[1];
+				imageCheckLoad(countIt);
 			}
+		};
+		for (let i = 0; i < images.length; i++) {
+			let el = images[i];
+
+			((el) => {
+				let _imageLoaded = (src, el, error = false, miss_ready = false) => {
+					imgLoaded(true, el, error);
+
+					if(!error && !miss_ready){
+						el._wfmf_ready = hashCode(src);
+					}
+				};
+
+				if(el.tagName == 'IMG' || el.tagName == 'IMAGE'){
+					wasImage = true;
+
+					if(el.src && !checkHash(el, el.src)){
+						let img = new Image();
+						img.onload = () => _imageLoaded(el.src, el);
+						img.onerror = () => _imageLoaded(el.src, el, true);
+						img.src = el.src;
+					}else{
+						_imageLoaded(el.src, el, false, true);
+					}
+				}else{
+					let imageBG = window.getComputedStyle(el, null).getPropertyValue("background-image");
+					if (imageBG == 'none'){
+						imagesCountLoaded++;
+						return;
+					}
+
+					let imagelink = /url\(['"]?([^'"]*)["']?\)/mig.exec(imageBG);
+
+					if (!imagelink){
+						imagesCountLoaded++;
+						return;
+					}
+					wasImage = true;
+
+					if(imagelink[1] && !checkHash(el, imagelink[1])){
+						let img = new Image();
+						img.onload = () => _imageLoaded(imagelink[1], el);
+						img.onerror = () => _imageLoaded(imagelink[1], el, true);
+						img.src = imagelink[1];
+					}else{
+						_imageLoaded(imagelink[1], el, false, true);
+					}
+				}
+			})(el);
+
+			imageCheckLoad(true);
 		}
 		if(!wasImage)
 			imgLoaded(false);
 
 		/* audios */
 		var audiosCountLoaded = 0;
-		var audLoaded = (count = true) => {
-			count = typeof count == 'object'? true : count;
-			if(count)
+		var audLoaded = (countIt, el, error = false) => {
+			if(countIt){
 				audiosCountLoaded++;
+				for (var i = 0; i < audiosWatch.length; i++) {
+					if(typeof audiosWatch[i] == 'function')
+						audiosWatch[i](el, error);
+				}
+			}
 			if(audios.length == audiosCountLoaded){
 				for (var i = 0; i < audiosLoaded.length; i++) {
-					audiosLoaded[i](count);
+					if(typeof audiosLoaded[i] == 'function')
+						audiosLoaded[i](countIt);
 				}
 				pushOnePoints();
 				ifSomethingLoaded();
 			}
 		};
 		for (let i = 0; i < audios.length; i++) {
-			var el = audios[i];
+			let el = audios[i];
 
-			var audio = document.createElement('audio');
-			audio['on' + options.audioEvent] = audLoaded;
-			audio.onerror = audLoaded;
-			audio.innerHTML = el.innerHTML;
-			if(el.src)
-				audio.src = el.src;
+			let _audioLoaded = (el, error = false, miss_ready = false) => {
+				audLoaded(true, el, error);
+
+				if(!error && !miss_ready){
+					let src = getAudioVideoSrc(el);
+					el._wfmf_ready = hashCode(src);
+				}
+			};
+
+			let src = getAudioVideoSrc(el);
+			if(src && !checkHash(el, src)){
+				var audio = document.createElement('audio');
+				audio['on' + options.audioEvent] = () => _audioLoaded(el);
+				audio.onerror = () => _audioLoaded(el, true);
+				audio.innerHTML = el.innerHTML;
+				if(el.src)
+					audio.src = el.src;
+			}else{
+				_audioLoaded(el, false, true);
+			}
 
 		}
 		if(!audios.length)
@@ -142,27 +193,46 @@ var waitMediaFiles = function(domElement, options = {}){
 
 		/* videos */
 		var videosCountLoaded = 0;
-		var vidLoaded = (count = true) => {
-			count = typeof count == 'object'? true : count;
-			if(count)
+		var vidLoaded = (countIt, el, error = false) => {
+			if(countIt){
 				videosCountLoaded++;
+				for (var i = 0; i < videosWatch.length; i++) {
+					if(typeof videosWatch[i] == 'function')
+						videosWatch[i](el, error);
+				}
+			}
 			if(videos.length == videosCountLoaded){
 				for (var i = 0; i < videosLoaded.length; i++) {
-					videosLoaded[i](count);
+					if(typeof videosLoaded[i] == 'function')
+						videosLoaded[i](countIt);
 				}
 				pushOnePoints();
 				ifSomethingLoaded();
 			}
 		};
 		for (let i = 0; i < videos.length; i++) {
-			var el = videos[i];
+			let el = videos[i];
 
-			var video = document.createElement('video');
-			video['on' + options.videoEvent] = vidLoaded;
-			video.onerror = vidLoaded;
-			video.innerHTML = el.innerHTML;
-			if(el.src)
-				video.src = el.src;
+			let _videoLoaded = (el, error = false, miss_ready = false) => {
+				vidLoaded(true, el, error);
+
+				if(!error && !miss_ready){
+					let src = getAudioVideoSrc(el);
+					el._wfmf_ready = hashCode(src);
+				}
+			};
+
+			let src = getAudioVideoSrc(el);
+			if(src && !checkHash(el, src)){
+				var video = document.createElement('video');
+				video['on' + options.videoEvent] = () => _videoLoaded(el);
+				video.onerror = () => _videoLoaded(el, true);
+				video.innerHTML = el.innerHTML;
+				if(el.src)
+					video.src = el.src;
+			}else{
+				_videoLoaded(el, false, true);
+			}
 
 		}
 		if(!videos.length)
@@ -170,38 +240,58 @@ var waitMediaFiles = function(domElement, options = {}){
 
 		/* iframe */
 		var iframesCountLoaded = 0;
-		var ifrLoaded = (count = true) => {
-			count = typeof count == 'object'? true : count;
-			if(count)
+		var ifrLoaded = (countIt, el, error = false) => {
+			if(countIt){
 				iframesCountLoaded++;
+				for (var i = 0; i < iframesWatch.length; i++) {
+					if(typeof iframesWatch[i] == 'function')
+						iframesWatch[i](el, error);
+				}
+			}
 			if(iframes.length == iframesCountLoaded){
 				for (var i = 0; i < iframesLoaded.length; i++) {
-					iframesLoaded[i](count);
+					if(typeof iframesLoaded[i] == 'function')
+						iframesLoaded[i](countIt);
 				}
 				pushOnePoints();
 				ifSomethingLoaded();
 			}
 		};
 		for (let i = 0; i < iframes.length; i++) {
-			var el = iframes[i];
+			let el = iframes[i];
 
 			if(!el.src){
-				ifrLoaded();
+				ifrLoaded(true, el, true);
 				continue;
 			}
 
-			(() => {
-				var ifr = document.createElement(el.tagName.toLocaleLowerCase());
-				ifr.style.display = 'none';
-				ifr.src = el.src;
-				var removeIfr = function(){
-					document.body.removeChild(ifr);
-					ifrLoaded();
+			((el) => {
+
+				var _iframeLoaded = (el, error = false, miss_ready = false) => {
+					ifrLoaded(true, el, error);
+
+					if(!error && !miss_ready)
+						el._wfmf_ready = hashCode(el.src);
 				};
-				ifr.onload = removeIfr;
-				ifr.onerror = removeIfr;
-				document.body.appendChild(ifr);
-			})();
+
+				if(el.src && !checkHash(el, el.src)){
+					var ifr = document.createElement(el.tagName.toLocaleLowerCase());
+					ifr.style.display = 'none';
+					ifr.setAttribute("wfmf-miss", '1');
+					ifr.src = el.src;
+					var removeIfr = function(el, error = false){
+						document.body.removeChild(ifr);
+
+						_iframeLoaded(el, error);
+					};
+					ifr.onload = () => removeIfr(el);
+					ifr.onerror = () => removeIfr(el, true);
+					document.body.appendChild(ifr);
+				}else{
+					_iframeLoaded(el, false, true);
+				}
+
+			})(el);
 
 		}
 		if(!iframes.length)
@@ -211,33 +301,72 @@ var waitMediaFiles = function(domElement, options = {}){
 
 	var allLoaded = [];
 	var audiosLoaded = [];
+	var audiosWatch = [];
 	var iframesLoaded = [];
+	var iframesWatch = [];
 	var imagesLoaded = [];
+	var imagesWatch = [];
 	var videosLoaded = [];
+	var videosWatch = [];
 
 	var obj = {
 		all: (callBack) => {
 			allLoaded.push(callBack);
 			return obj;
 		},
-		audio: (callBack) => {
+		audio: (callBack, watch) => {
 			audiosLoaded.push(callBack);
+			audiosWatch.push(watch);
 			return obj;
 		},
-		iframe: (callBack) => {
+		iframe: (callBack, watch) => {
 			iframesLoaded.push(callBack);
+			iframesWatch.push(watch);
 			return obj;
 		},
-		image: (callBack) => {
+		image: (callBack, watch) => {
 			imagesLoaded.push(callBack);
+			imagesWatch.push(watch);
 			return obj;
 		},
-		video: (callBack) => {
+		video: (callBack, watch) => {
 			videosLoaded.push(callBack);
+			videosWatch.push(watch);
 			return obj;
 		},
 	};
 	return obj;
 }
+
+function getAudioVideoSrc(el){
+	var src = '';
+	if(!el.src){
+		for (var i = 0; i < el.children.length; i++) {
+			if(el.children[i].src)
+				src += el.children[i].src;
+		}
+	}else{
+		src = el.src;
+	}
+
+	return src;
+}
+
+function checkHash(el, src){
+	console.log(el._wfmf_ready, src);
+	return el._wfmf_ready && el._wfmf_ready === hashCode(src);
+}
+
+function hashCode(str) {
+	var hash = 0,
+		i, chr;
+	if (str.length === 0) return hash;
+	for (i = 0; i < str.length; i++) {
+		chr = str.charCodeAt(i);
+		hash = ((hash << 5) - hash) + chr;
+		hash |= 0; // Convert to 32bit integer
+	}
+	return hash;
+};
 
 export default waitMediaFiles;

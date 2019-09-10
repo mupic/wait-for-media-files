@@ -1,7 +1,7 @@
-import promiseWaitMediaFiles from './promise.wait-for-media-files';
+import promiseWaitMediaFiles from './promise';
 
-jQuery(function($){
+(function($){
 	$.fn.prsWaitMediaFiles = function(options){
 		return promiseWaitMediaFiles(this, options);
 	};
-});
+})(jQuery);

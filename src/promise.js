@@ -4,29 +4,29 @@ var promiseWaitMediaFiles = function(domElement, options){
 	var callbacks = waitMediaFiles(domElement, options);
 
 	return {
-		all(){
+		all(watch){
 			return new Promise((resolve) => {
-				callbacks.all(resolve);
+				callbacks.all(resolve, watch);
 			});
 		},
-		audio(){
+		audio(watch){
 			return new Promise((resolve) => {
-				callbacks.audio(resolve);
+				callbacks.audio(resolve, watch);
 			});
 		},
-		iframe(){
+		iframe(watch){
 			return new Promise((resolve) => {
-				callbacks.iframe(resolve);
+				callbacks.iframe(resolve, watch);
 			});
 		},
-		image(){
+		image(watch){
 			return new Promise((resolve) => {
-				callbacks.image(resolve);
+				callbacks.image(resolve, watch);
 			});
 		},
-		video(){
+		video(watch){
 			return new Promise((resolve) => {
-				callbacks.video(resolve);
+				callbacks.video(resolve, watch);
 			});
 		},
 	};

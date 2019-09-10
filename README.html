@@ -1,0 +1,72 @@
+<html>
+      <head>
+        <meta charset="UTF-8">
+        <title>README.md</title>
+      </head>
+      <body>
+        <h1 id="waitmediafiles-js">waitMediaFiles.js</h1>
+<h2 id="installation">Installation</h2>
+<pre><code class="lang-bash">npm i wait-media-files
+</code></pre>
+<h2 id="require">Require</h2>
+<pre><code class="lang-javascript">import waitMediaFiles from &#39;wait-media-files&#39;;
+
+waitMediaFiles(document.getElementsByTagName(&#39;body&#39;), {})
+.image(function(imageExists){}, function(el, isError){}) //The first callback will be called when all the images are loaded. The second callback will be called every time a image is loaded.
+.audio(function(audioExists){}, function(el, isError){})
+.video(function(videoExists){}, function(el, isError){})
+.iframe(function(iframeExists){}, function(el, isError){})
+.all(function(){})
+</code></pre>
+<h2 id="example">Example</h2>
+<h3 id="vanilla-js">Vanilla js</h3>
+<pre><code class="lang-javascript">require(&#39;wait-media-files/global&#39;);
+window.waitMediaFiles(document.getElementsByTagName(&#39;body&#39;), {})
+.image(function(imageExists){}, function(el, isError){})
+.audio(function(audioExists){}, function(el, isError){})
+.video(function(videoExists){}, function(el, isError){})
+.iframe(function(iframeExists){}, function(el, isError){})
+.all(function(){})
+</code></pre>
+<h3 id="jquery">jQuery</h3>
+<pre><code class="lang-javascript">require(&#39;jquery&#39;);
+require(&#39;wait-media-files/jquery&#39;);
+$(&#39;body&#39;).waitMediaFiles({})
+.image(function(imageExists){}, function(el, isError){})
+.audio(function(audioExists){}, function(el, isError){})
+.video(function(videoExists){}, function(el, isError){})
+.iframe(function(iframeExists){}, function(el, isError){})
+.all(function(){})
+</code></pre>
+<h2 id="promise-example">Promise example</h2>
+<h3 id="vanilla-js">Vanilla js</h3>
+<pre><code class="lang-javascript">import prsWaitMediaFiles from &#39;wait-media-files/promise&#39;;
+var callbacks = prsWaitMediaFiles(document.getElementsByTagName(&#39;body&#39;), {});
+callbacks.image(function(el, isError){}).then(function(imageExists){});
+callbacks.audio(function(el, isError){}).then(function(audioExists){});
+callbacks.video(function(el, isError){}).then(function(videoExists){});
+callbacks.iframe(function(el, isError){}).then(function(iframeExists){});
+callbacks.all().then(function(){});
+</code></pre>
+<h3 id="jquery">jQuery</h3>
+<pre><code class="lang-javascript">require(&#39;jquery&#39;);
+require(&#39;wait-media-files/jqueryPromise&#39;);
+var callbacks = $(&#39;body&#39;).prsWaitMediaFiles({});
+callbacks.image(function(el, isError){}).then(function(imageExists){});
+callbacks.audio(function(el, isError){}).then(function(audioExists){});
+callbacks.video(function(el, isError){}).then(function(videoExists){});
+callbacks.iframe(function(el, isError){}).then(function(iframeExists){});
+callbacks.all().then(function(){});
+</code></pre>
+<h2 id="waitmediafiles-domelements-config-">waitMediaFiles(domElements[, config])</h2>
+<h5 id="config">config</h5>
+<pre><code class="lang-javascript">{
+    audioEvent: &#39;canplay&#39;, //example: canplay, canplaythrough, loadeddata, loadedmetadata.
+    videoEvent: &#39;canplay&#39;, //example: canplay, canplaythrough, loadeddata, loadedmetadata.
+}
+</code></pre>
+<p>&quot;audioEvent&quot;, &quot;videoEvent&quot; determines when files is considered loaded.
+More info: <a href="https://developer.mozilla.org/ru/docs/Web/Guide/Events/Media_events">https://developer.mozilla.org/ru/docs/Web/Guide/Events/Media_events</a></p>
+
+      </body>
+    </html>
