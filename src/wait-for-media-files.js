@@ -353,7 +353,6 @@ function getAudioVideoSrc(el){
 }
 
 function checkHash(el, src){
-	console.log(el._wfmf_ready, src);
 	return el._wfmf_ready && el._wfmf_ready === hashCode(src);
 }
 
