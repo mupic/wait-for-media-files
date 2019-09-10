@@ -19,6 +19,8 @@ require("core-js/modules/es6.object.to-string");
 
 require("core-js/modules/es6.object.keys");
 
+var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
+
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { keys.push.apply(keys, Object.getOwnPropertySymbols(object)); } if (enumerableOnly) keys = keys.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); return keys; }
@@ -68,16 +70,16 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
   var iframes = [];
 
   for (var _i2 = 0; _i2 < elements.length; _i2++) {
-    var _el = elements[_i2];
+    var _el2 = elements[_i2];
 
-    if (_el.tagName == 'VIDEO') {
-      videos.push(_el);
-    } else if (_el.tagName == 'AUDIO') {
-      audios.push(_el);
-    } else if (_el.tagName == 'IFRAME') {
-      if (!_el.attributes['wfmf-miss']) iframes.push(_el);
-    } else if (_el.tagName != 'SOURCE') {
-      images.push(_el);
+    if (_el2.tagName == 'VIDEO') {
+      videos.push(_el2);
+    } else if (_el2.tagName == 'AUDIO') {
+      audios.push(_el2);
+    } else if (_el2.tagName == 'IFRAME') {
+      if (!_el2.attributes['wfmf-miss']) iframes.push(_el2);
+    } else if (_el2.tagName != 'SOURCE') {
+      images.push(_el2);
     }
   }
 
@@ -127,7 +129,7 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
     };
 
     for (var _i3 = 0; _i3 < images.length; _i3++) {
-      var _el2 = images[_i3];
+      var _el3 = images[_i3];
 
       (function (el) {
         var _imageLoaded = function _imageLoaded(src, el) {
@@ -138,12 +140,26 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
           if (!error && !miss_ready) {
             el._wfmf_ready = hashCode(src);
           }
+
+          if ((0, _typeof2.default)(el._wfmf_watch) == 'object') {
+            for (var i = 0; i < el._wfmf_watch.length; i++) {
+              if (typeof el._wfmf_watch[i] == 'function') el._wfmf_watch[i](src, el, error);
+            }
+
+            delete el._wfmf_watch;
+          }
         };
 
         if (el.tagName == 'IMG' || el.tagName == 'IMAGE') {
           wasImage = true;
 
-          if (el.src && !checkHash(el, el.src)) {
+          if ((0, _typeof2.default)(el._wfmf_watch) == 'object') {
+            //if the event was bound in the last function call, just wait for it to be called
+            el._wfmf_watch.push(function (_src, _el, _error) {
+              imgLoaded(true, _el, _error);
+            });
+          } else if (el.src && !checkHash(el, el.src)) {
+            if (typeof el._wfmf_watch == 'undefined') el._wfmf_watch = [];
             var img = new Image();
 
             img.onload = function () {
@@ -175,7 +191,14 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
 
           wasImage = true;
 
-          if (imagelink[1] && !checkHash(el, imagelink[1])) {
+          if ((0, _typeof2.default)(el._wfmf_watch) == 'object') {
+            //if the event was bound in the last function call, just wait for it to be called
+            el._wfmf_watch.push(function (_src, _el, _error) {
+              imgLoaded(true, _el, _error);
+            });
+          } else if (imagelink[1] && !checkHash(el, imagelink[1])) {
+            if (typeof el._wfmf_watch == 'undefined') el._wfmf_watch = [];
+
             var _img = new Image();
 
             _img.onload = function () {
@@ -191,9 +214,9 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
             _imageLoaded(imagelink[1], el, false, true);
           }
         }
-      })(_el2);
+      })(_el3);
 
-      imageCheckLoad(true);
+      imageCheckLoad(wasImage);
     }
 
     if (!wasImage) imgLoaded(false);
@@ -231,15 +254,29 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
         audLoaded(true, el, error);
 
         if (!error && !miss_ready) {
-          var _src = getAudioVideoSrc(el);
+          var _src2 = getAudioVideoSrc(el);
 
-          el._wfmf_ready = hashCode(_src);
+          el._wfmf_ready = hashCode(_src2);
+        }
+
+        if ((0, _typeof2.default)(el._wfmf_watch) == 'object') {
+          for (var i = 0; i < el._wfmf_watch.length; i++) {
+            if (typeof el._wfmf_watch[i] == 'function') el._wfmf_watch[i](el, error);
+          }
+
+          delete el._wfmf_watch;
         }
       };
 
       var src = getAudioVideoSrc(el);
 
-      if (src && !checkHash(el, src)) {
+      if ((0, _typeof2.default)(el._wfmf_watch) == 'object') {
+        //if the event was bound in the last function call, just wait for it to be called
+        el._wfmf_watch.push(function (_el, _error) {
+          audLoaded(true, _el, _error);
+        });
+      } else if (src && !checkHash(el, src)) {
+        if (typeof el._wfmf_watch == 'undefined') el._wfmf_watch = [];
         audio = document.createElement('audio');
 
         audio['on' + options.audioEvent] = function () {
@@ -298,15 +335,29 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
         vidLoaded(true, el, error);
 
         if (!error && !miss_ready) {
-          var _src2 = getAudioVideoSrc(el);
+          var _src3 = getAudioVideoSrc(el);
 
-          el._wfmf_ready = hashCode(_src2);
+          el._wfmf_ready = hashCode(_src3);
+        }
+
+        if ((0, _typeof2.default)(el._wfmf_watch) == 'object') {
+          for (var i = 0; i < el._wfmf_watch.length; i++) {
+            if (typeof el._wfmf_watch[i] == 'function') el._wfmf_watch[i](el, error);
+          }
+
+          delete el._wfmf_watch;
         }
       };
 
       var src = getAudioVideoSrc(el);
 
-      if (src && !checkHash(el, src)) {
+      if ((0, _typeof2.default)(el._wfmf_watch) == 'object') {
+        //if the event was bound in the last function call, just wait for it to be called
+        el._wfmf_watch.push(function (_el, _error) {
+          vidLoaded(true, _el, _error);
+        });
+      } else if (src && !checkHash(el, src)) {
+        if (typeof el._wfmf_watch == 'undefined') el._wfmf_watch = [];
         video = document.createElement('video');
 
         video['on' + options.videoEvent] = function () {
@@ -357,10 +408,10 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
     };
 
     for (var _i6 = 0; _i6 < iframes.length; _i6++) {
-      var _el3 = iframes[_i6];
+      var _el4 = iframes[_i6];
 
-      if (!_el3.src) {
-        ifrLoaded(true, _el3, true);
+      if (!_el4.src) {
+        ifrLoaded(true, _el4, true);
         continue;
       }
 
@@ -370,9 +421,23 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
           var miss_ready = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
           ifrLoaded(true, el, error);
           if (!error && !miss_ready) el._wfmf_ready = hashCode(el.src);
+
+          if ((0, _typeof2.default)(el._wfmf_watch) == 'object') {
+            for (var i = 0; i < el._wfmf_watch.length; i++) {
+              if (typeof el._wfmf_watch[i] == 'function') el._wfmf_watch[i](el, error);
+            }
+
+            delete el._wfmf_watch;
+          }
         };
 
-        if (el.src && !checkHash(el, el.src)) {
+        if ((0, _typeof2.default)(el._wfmf_watch) == 'object') {
+          //if the event was bound in the last function call, just wait for it to be called
+          el._wfmf_watch.push(function (_el, _error) {
+            ifrLoaded(true, _el, _error);
+          });
+        } else if (el.src && !checkHash(el, el.src)) {
+          if (typeof el._wfmf_watch == 'undefined') el._wfmf_watch = [];
           var ifr = document.createElement(el.tagName.toLocaleLowerCase());
           ifr.style.display = 'none';
           ifr.setAttribute("wfmf-miss", '1');
@@ -397,7 +462,7 @@ var waitMediaFiles = function waitMediaFiles(domElement) {
         } else {
           _iframeLoaded(el, false, true);
         }
-      })(_el3);
+      })(_el4);
     }
 
     if (!iframes.length) ifrLoaded(false);

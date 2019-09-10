@@ -100,12 +100,27 @@ var waitMediaFiles = function(domElement, options = {}){
 					if(!error && !miss_ready){
 						el._wfmf_ready = hashCode(src);
 					}
+
+					if(typeof el._wfmf_watch == 'object'){
+						for (var i = 0; i < el._wfmf_watch.length; i++) {
+							if(typeof el._wfmf_watch[i] == 'function')
+								el._wfmf_watch[i](src, el, error);
+						}
+						delete el._wfmf_watch;
+					}
 				};
 
 				if(el.tagName == 'IMG' || el.tagName == 'IMAGE'){
 					wasImage = true;
 
-					if(el.src && !checkHash(el, el.src)){
+					if(typeof el._wfmf_watch == 'object'){ //if the event was bound in the last function call, just wait for it to be called
+						el._wfmf_watch.push((_src, _el, _error) => {
+							imgLoaded(true, _el, _error);
+						});
+					}else if(el.src && !checkHash(el, el.src)){
+						if(typeof el._wfmf_watch == 'undefined')
+							el._wfmf_watch = [];
+
 						let img = new Image();
 						img.onload = () => _imageLoaded(el.src, el);
 						img.onerror = () => _imageLoaded(el.src, el, true);
@@ -128,7 +143,14 @@ var waitMediaFiles = function(domElement, options = {}){
 					}
 					wasImage = true;
 
-					if(imagelink[1] && !checkHash(el, imagelink[1])){
+					if(typeof el._wfmf_watch == 'object'){ //if the event was bound in the last function call, just wait for it to be called
+						el._wfmf_watch.push((_src, _el, _error) => {
+							imgLoaded(true, _el, _error);
+						});
+					}else if(imagelink[1] && !checkHash(el, imagelink[1])){
+						if(typeof el._wfmf_watch == 'undefined')
+							el._wfmf_watch = [];
+
 						let img = new Image();
 						img.onload = () => _imageLoaded(imagelink[1], el);
 						img.onerror = () => _imageLoaded(imagelink[1], el, true);
@@ -139,7 +161,7 @@ var waitMediaFiles = function(domElement, options = {}){
 				}
 			})(el);
 
-			imageCheckLoad(true);
+			imageCheckLoad(wasImage);
 		}
 		if(!wasImage)
 			imgLoaded(false);
@@ -173,10 +195,24 @@ var waitMediaFiles = function(domElement, options = {}){
 					let src = getAudioVideoSrc(el);
 					el._wfmf_ready = hashCode(src);
 				}
+				if(typeof el._wfmf_watch == 'object'){
+					for (var i = 0; i < el._wfmf_watch.length; i++) {
+						if(typeof el._wfmf_watch[i] == 'function')
+							el._wfmf_watch[i](el, error);
+					}
+					delete el._wfmf_watch;
+				}
 			};
 
 			let src = getAudioVideoSrc(el);
-			if(src && !checkHash(el, src)){
+			if(typeof el._wfmf_watch == 'object'){ //if the event was bound in the last function call, just wait for it to be called
+				el._wfmf_watch.push((_el, _error) => {
+					audLoaded(true, _el, _error);
+				});
+			}else if(src && !checkHash(el, src)){
+				if(typeof el._wfmf_watch == 'undefined')
+					el._wfmf_watch = [];
+
 				var audio = document.createElement('audio');
 				audio['on' + options.audioEvent] = () => _audioLoaded(el);
 				audio.onerror = () => _audioLoaded(el, true);
@@ -220,10 +256,25 @@ var waitMediaFiles = function(domElement, options = {}){
 					let src = getAudioVideoSrc(el);
 					el._wfmf_ready = hashCode(src);
 				}
+
+				if(typeof el._wfmf_watch == 'object'){
+					for (var i = 0; i < el._wfmf_watch.length; i++) {
+						if(typeof el._wfmf_watch[i] == 'function')
+							el._wfmf_watch[i](el, error);
+					}
+					delete el._wfmf_watch;
+				}
 			};
 
 			let src = getAudioVideoSrc(el);
-			if(src && !checkHash(el, src)){
+			if(typeof el._wfmf_watch == 'object'){ //if the event was bound in the last function call, just wait for it to be called
+				el._wfmf_watch.push((_el, _error) => {
+					vidLoaded(true, _el, _error);
+				});
+			}else if(src && !checkHash(el, src)){
+				if(typeof el._wfmf_watch == 'undefined')
+					el._wfmf_watch = [];
+
 				var video = document.createElement('video');
 				video['on' + options.videoEvent] = () => _videoLoaded(el);
 				video.onerror = () => _videoLoaded(el, true);
@@ -272,9 +323,24 @@ var waitMediaFiles = function(domElement, options = {}){
 
 					if(!error && !miss_ready)
 						el._wfmf_ready = hashCode(el.src);
+
+					if(typeof el._wfmf_watch == 'object'){
+						for (var i = 0; i < el._wfmf_watch.length; i++) {
+							if(typeof el._wfmf_watch[i] == 'function')
+								el._wfmf_watch[i](el, error);
+						}
+						delete el._wfmf_watch;
+					}
 				};
 
-				if(el.src && !checkHash(el, el.src)){
+				if(typeof el._wfmf_watch == 'object'){ //if the event was bound in the last function call, just wait for it to be called
+					el._wfmf_watch.push((_el, _error) => {
+						ifrLoaded(true, _el, _error);
+					});
+				}else if(el.src && !checkHash(el, el.src)){
+					if(typeof el._wfmf_watch == 'undefined')
+						el._wfmf_watch = [];
+
 					var ifr = document.createElement(el.tagName.toLocaleLowerCase());
 					ifr.style.display = 'none';
 					ifr.setAttribute("wfmf-miss", '1');
