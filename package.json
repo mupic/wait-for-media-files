@@ -1,6 +1,6 @@
 {
 	"name": "wait-media-files",
-	"version": "3.1.0",
+	"version": "3.1.1",
 	"description": "Waiting for all sources to load in a DOM element",
 	"main": "./wait-for-media-files.js",
 	"scripts": {
@@ -21,19 +21,19 @@
 	"license": "MIT",
 	"homepage": "https://github.com/mupic/wait-media-files#readme",
 	"dependencies": {
-		"@babel/polyfill": "^7.2.5"
+		"@babel/polyfill": "^7.6.0"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.5.0",
-		"@babel/core": "^7.5.4",
-		"@babel/plugin-transform-runtime": "^7.5.0",
-		"@babel/preset-env": "^7.5.4",
-		"@babel/runtime": "^7.5.4",
+		"@babel/cli": "^7.6.4",
+		"@babel/core": "^7.6.4",
+		"@babel/plugin-transform-runtime": "^7.6.2",
+		"@babel/preset-env": "^7.6.3",
+		"@babel/runtime": "^7.6.3",
 		"babel-loader": "^8.0.5",
 		"babili-webpack-plugin": "^0.1.2",
 		"copy-webpack-plugin": "^4.6.0",
-		"webpack": "^4.35.3",
-		"webpack-cli": "^3.3.5",
-		"yargs": "^13.2.4"
+		"webpack": "^4.41.2",
+		"webpack-cli": "^3.3.9",
+		"yargs": "^13.3.0"
 	}
 }
